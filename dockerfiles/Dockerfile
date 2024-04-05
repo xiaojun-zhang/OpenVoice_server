@@ -24,7 +24,7 @@ RUN pip install -e .
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
 RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_1226.zip
-RUN unzip checkpoints_1226.zip -d /
+RUN unzip checkpoints_1226.zip -d .
 
 
 # Run the app when the container launches
