@@ -28,4 +28,4 @@ RUN unzip checkpoints_1226.zip -d /
 
 
 # Run the app when the container launches
-CMD ["python", "openvoice/openvoice_app.py"]
+#CMD ["python", "openvoice/openvoice_app.py"]
