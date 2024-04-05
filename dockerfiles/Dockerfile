@@ -33,5 +33,5 @@ RUN rm checkpoints_1226.zip
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
-# Run the FastAPI application when the container launches
-CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
+# Change to the OpenVoice directory and run the FastAPI application
+CMD /bin/bash -c "cd /app/OpenVoice_server/openvoice && uvicorn openvoice_server:app --host 0.0.0.0 --port 8000"
