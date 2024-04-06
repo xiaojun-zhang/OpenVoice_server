@@ -17,6 +17,8 @@ WORKDIR /app/OpenVoice_server
 RUN conda create -n openvoice python=3.9
 RUN echo "source activate openvoice" > ~/.bashrc
 ENV PATH /opt/conda/envs/openvoice/bin:$PATH
+# force python to use unbuffered mode for logging
+ENV PYTHONUNBUFFERED=1
 
 # Install the OpenVoice package and uvicorn for FastAPI
 RUN pip install -e . uvicorn ffmpeg
