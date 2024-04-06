@@ -29,12 +29,11 @@ RUN pip install -e .
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
 RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_1226.zip
-RUN unzip checkpoints_1226.zip -d .
+RUN unzip checkpoints_1226.zip -d ./openvoice
 RUN rm checkpoints_1226.zip
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
 # Run the FastAPI application when the container launches
-#CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
-CMD ["/bin/bash"]
+CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
