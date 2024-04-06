@@ -68,6 +68,7 @@ async def synthesize_speech(request: SynthesizeSpeechRequest):
     try:
         print('1')
         reference_speaker = f'resources/{request.voice}'
+        print(reference_speaker)
         target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, target_dir='processed', vad=True)
         print('2')
         save_path = f'{output_dir}/output_en_default.wav'
