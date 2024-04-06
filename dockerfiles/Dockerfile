@@ -19,7 +19,7 @@ RUN echo "source activate openvoice" > ~/.bashrc
 ENV PATH /opt/conda/envs/openvoice/bin:$PATH
 
 # Install the OpenVoice package and uvicorn for FastAPI
-RUN pip install -e . uvicorn
+RUN pip install -e . uvicorn ffmpeg
 
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
