@@ -30,6 +30,7 @@ RUN mv resources openvoice/resources
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
+EXPOSE 7860
 
 RUN cd /app/OpenVoice_server/openvoice
 WORKDIR /app/OpenVoice_server/openvoice
