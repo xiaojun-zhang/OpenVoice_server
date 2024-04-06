@@ -9,7 +9,6 @@ from pydantic import BaseModel
 
 from api import BaseSpeakerTTS, ToneColorConverter
 
-
 app = FastAPI()
 
 # Initialize OpenVoice models
@@ -26,10 +25,12 @@ os.makedirs(output_dir, exist_ok=True)
 
 source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
 
+
 class SynthesizeSpeechRequest(BaseModel):
     text: str
     voice: Optional[str] = 'default_voice.wav'
     style: Optional[str] = 'default'
+
 
 @app.post("/upload_audio/")
 async def upload_audio(file: UploadFile = File(...)):
@@ -43,11 +44,16 @@ async def upload_audio(file: UploadFile = File(...)):
     """
     try:
         contents = await file.read()
+
+        # Make sure the resources directory exists
+        os.makedirs("resources", exist_ok=True)
+
         with open(f"resources/{file.filename}", "wb") as f:
             f.write(contents)
         return {"message": f"File {file.filename} uploaded successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 @app.post("/synthesize_speech/")
 async def synthesize_speech(request: SynthesizeSpeechRequest):
