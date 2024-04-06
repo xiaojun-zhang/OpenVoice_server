@@ -37,4 +37,4 @@ EXPOSE 8000
 
 # Run the FastAPI application when the container launches
 #CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
-CMD tail -f /dev/null
+CMD ["/bin/bash"]
