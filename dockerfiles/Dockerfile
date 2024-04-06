@@ -21,14 +21,12 @@ ENV PATH /opt/conda/envs/openvoice/bin:$PATH
 # Install the OpenVoice package and uvicorn for FastAPI
 RUN pip install -e . uvicorn
 
-# Install the OpenVoice package
-RUN pip install -e .
-
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
 RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_1226.zip
 RUN unzip checkpoints_1226.zip -d ./openvoice
 RUN rm checkpoints_1226.zip
+RUN mv resources openvoice/resources
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
@@ -36,4 +34,4 @@ EXPOSE 8000
 RUN cd /app/OpenVoice_server/openvoice
 WORKDIR /app/OpenVoice_server/openvoice
 # Run the FastAPI application when the container launches
-CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
