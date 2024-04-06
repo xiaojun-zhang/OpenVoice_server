@@ -36,4 +36,5 @@ RUN rm checkpoints_1226.zip
 EXPOSE 8000
 
 # Run the FastAPI application when the container launches
-CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["uvicorn", "openvoice.openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD tail -f /dev/null
