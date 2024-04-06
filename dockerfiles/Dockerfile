@@ -8,7 +8,7 @@ WORKDIR /app
 ADD . /app
 
 # Clone the git repo
-RUN git clone https://github.com/ValyrianTech/OpenVoice_server.git .
+RUN git clone https://github.com/ValyrianTech/OpenVoice_server.git
 
 # Set the working directory to OpenVoice
 WORKDIR /app/OpenVoice_server
