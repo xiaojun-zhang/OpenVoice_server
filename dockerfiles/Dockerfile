@@ -34,4 +34,5 @@ EXPOSE 8000
 RUN cd /app/OpenVoice_server/openvoice
 WORKDIR /app/OpenVoice_server/openvoice
 # Run the FastAPI application when the container launches
-CMD ["uvicorn", "openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["uvicorn", "openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "-m", "openvoice_app", "--share"]
