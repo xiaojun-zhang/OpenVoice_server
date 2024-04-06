@@ -70,7 +70,7 @@ async def synthesize_speech(request: SynthesizeSpeechRequest):
         reference_speaker = f'resources/{request.voice}'
         print(reference_speaker)
         # print current working directory
-        print(os.getcwd())
+        print('cmd: ' + os.getcwd())
 
         # print all files in the resources directory
         print(os.listdir('resources'))
