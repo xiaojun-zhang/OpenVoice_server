@@ -34,6 +34,8 @@ class SynthesizeSpeechRequest(BaseModel):
     text: str
     voice: Optional[str] = 'default_voice.wav'
     style: Optional[str] = 'default'
+    language: Optional[str] = 'English'
+    speed: Optional[float] = 1.0
 
 
 class UploadAudioRequest(BaseModel):
@@ -115,7 +117,7 @@ async def synthesize_speech(request: SynthesizeSpeechRequest, response: Response
 
         # Run the base speaker tts
         src_path = f'{output_dir}/tmp.wav'
-        base_speaker_tts.tts(request.text, src_path, speaker=request.style, language='English', speed=1.0)
+        base_speaker_tts.tts(request.text, src_path, speaker=request.style, language=request.language, speed=request.speed)
 
         # Run the tone color converter
         encode_message = "@MyShell"
