@@ -47,13 +47,13 @@ async def upload_audio(file: UploadFile = File(...)):
     try:
         contents = await file.read()
 
-        ALLOWED_EXTENSIONS = {'wav', 'mp3', 'flac', 'ogg'}
-        MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+        allowed_extensions = {'wav', 'mp3', 'flac', 'ogg'}
+        max_file_size = 5 * 1024 * 1024  # 5MB
 
-        if not file.filename.split('.')[-1] in ALLOWED_EXTENSIONS:
+        if not file.filename.split('.')[-1] in allowed_extensions:
             return {"error": "Invalid file type. Allowed types are: wav, mp3, flac, ogg"}
 
-        if len(contents) > MAX_FILE_SIZE:
+        if len(contents) > max_file_size:
             return {"error": "File size is over limit. Max size is 5MB."}
 
         # Note: we need to first write the file in order to check magic.
