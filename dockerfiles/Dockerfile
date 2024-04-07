@@ -39,7 +39,7 @@ RUN cd /app/OpenVoice_server/openvoice
 WORKDIR /app/OpenVoice_server/openvoice
 
 RUN conda install ffmpeg
-RUN conda install libmagic
+RUN conda install --yes libmagic
 
 # Run the FastAPI application when the container launches
 CMD ["uvicorn", "openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
