@@ -7,7 +7,7 @@ import io
 import magic
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
-from starlette.responses import FileResponse, Response
+from starlette.responses import StreamingResponse
 from typing import Optional
 from pydantic import BaseModel
 
@@ -89,14 +89,12 @@ async def upload_audio(audio_file_label: str = Form(...), file: UploadFile = Fil
 
 
 @app.post("/synthesize_speech/")
-async def synthesize_speech(request: SynthesizeSpeechRequest, response: Response):
+async def synthesize_speech(request: SynthesizeSpeechRequest):
     """
     Synthesize speech from text using a specified voice and style.
 
     :param request: The request parameters.
     :type request: SynthesizeSpeechRequest
-    :param response: The response object.
-    :type response: Response
     :return: Confirmation of successful synthesis.
     :rtype: dict
     """
@@ -127,13 +125,14 @@ async def synthesize_speech(request: SynthesizeSpeechRequest, response: Response
             output_path=save_path,
             message=encode_message)
 
-        result = FileResponse(save_path, media_type="audio/wav")
+        result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
     end_time = time.time()
     elapsed_time = end_time - start_time
-    response.headers["X-Elapsed-Time"] = str(elapsed_time)
-    response.headers["X-Device-Used"] = device
+
+    result.headers["X-Elapsed-Time"] = str(elapsed_time)
+    result.headers["X-Device-Used"] = device
 
     return result
