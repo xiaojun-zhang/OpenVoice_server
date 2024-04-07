@@ -34,11 +34,16 @@ class SynthesizeSpeechRequest(BaseModel):
     style: Optional[str] = 'default'
 
 
+class UploadAudioRequest(BaseModel):
+    audio_file_label: str
+
+
 @app.post("/upload_audio/")
-async def upload_audio(file: UploadFile = File(...)):
+async def upload_audio(request: UploadAudioRequest, file: UploadFile = File(...)):
     """
     Upload an audio file for later use as the reference audio.
 
+    :param request: The request parameters.
     :param file: The audio file to be uploaded.
     :type file: UploadFile
     :return: Confirmation of successful upload.
@@ -66,9 +71,15 @@ async def upload_audio(file: UploadFile = File(...)):
         # Make sure the resources directory exists
         os.makedirs("resources", exist_ok=True)
 
-        with open(f"resources/{file.filename}", "wb") as f:
+        # Use provided 'audio_file_label' for stored file's name.
+        # We retain the file extension to ensure appropriate processing later.
+        file_extension = file.filename.split('.')[-1]
+        stored_file_name = f"{request.audio_file_label}.{file_extension}"
+
+        with open(f"resources/{stored_file_name}", "wb") as f:
             f.write(contents)
-        return {"message": f"File {file.filename} uploaded successfully."}
+
+        return {"message": f"File {file.filename} uploaded successfully with label {request.audio_file_label}."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -84,7 +95,14 @@ async def synthesize_speech(request: SynthesizeSpeechRequest):
     :rtype: dict
     """
     try:
-        reference_speaker = f'resources/{request.voice}'
+        # Retrieve the correct file based on the 'voice' parameter
+        # It should match the 'audio_file_label' used while uploading
+        matching_files = [file for file in os.listdir("resources") if file.startswith(request.voice)]
+
+        if not matching_files:
+            raise HTTPException(status_code=400, detail="No matching voice found.")
+
+        reference_speaker = f'resources/{matching_files[0]}'
 
         target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, target_dir='processed', vad=True)
         save_path = f'{output_dir}/output_en_default.wav'
