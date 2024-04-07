@@ -22,6 +22,7 @@ ENV PYTHONUNBUFFERED=1
 
 # Install the OpenVoice package and uvicorn for FastAPI
 RUN pip install -e . uvicorn ffmpeg
+RUN pip install -r requirements.txt
 
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
@@ -37,7 +38,7 @@ EXPOSE 7860
 RUN cd /app/OpenVoice_server/openvoice
 WORKDIR /app/OpenVoice_server/openvoice
 
-RUN conda install ffmpeg python-magic
+RUN conda install ffmpeg
 
 # Run the FastAPI application when the container launches
 CMD ["uvicorn", "openvoice_server:app", "--host", "0.0.0.0", "--port", "8000"]
