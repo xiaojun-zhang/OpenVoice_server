@@ -1,4 +1,6 @@
 #!/bin/bash
+# Activate conda environment
+source activate openvoice
 # Install libmagic
 conda install --yes libmagic
 # Start the server
