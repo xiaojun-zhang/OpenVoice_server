@@ -6,7 +6,7 @@ import se_extractor
 import io
 import magic
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from starlette.responses import FileResponse, Response
 from typing import Optional
 from pydantic import BaseModel
@@ -43,11 +43,11 @@ class UploadAudioRequest(BaseModel):
 
 
 @app.post("/upload_audio/")
-async def upload_audio(request: UploadAudioRequest, file: UploadFile = File(...)):
+async def upload_audio(audio_file_label: str = Form(...), file: UploadFile = File(...)):
     """
     Upload an audio file for later use as the reference audio.
 
-    :param request: The request parameters.
+    :param audio_file_label: The label for the audio file.
     :param file: The audio file to be uploaded.
     :type file: UploadFile
     :return: Confirmation of successful upload.
@@ -78,19 +78,18 @@ async def upload_audio(request: UploadAudioRequest, file: UploadFile = File(...)
         # Use provided 'audio_file_label' for stored file's name.
         # We retain the file extension to ensure appropriate processing later.
         file_extension = file.filename.split('.')[-1]
-        stored_file_name = f"{request.audio_file_label}.{file_extension}"
+        stored_file_name = f"{audio_file_label}.{file_extension}"
 
         with open(f"resources/{stored_file_name}", "wb") as f:
             f.write(contents)
 
-        return {"message": f"File {file.filename} uploaded successfully with label {request.audio_file_label}."}
+        return {"message": f"File {file.filename} uploaded successfully with label {audio_file_label}."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/synthesize_speech/")
 async def synthesize_speech(request: SynthesizeSpeechRequest, response: Response):
-
     """
     Synthesize speech from text using a specified voice and style.
 
