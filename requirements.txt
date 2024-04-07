@@ -15,7 +15,6 @@ jieba==0.42.1
 gradio==3.48.0
 langid==1.1.6
 python-magic==0.4.27
-libmagic==1.0
 fastapi==0.110.1
 torch==2.2.2
 soundfile==0.12.1
