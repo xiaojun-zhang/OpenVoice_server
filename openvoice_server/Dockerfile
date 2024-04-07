@@ -42,10 +42,10 @@ RUN conda install ffmpeg
 RUN conda install --yes libmagic
 
 # copy the startup script into the container
-COPY start.sh /app/
+COPY start.sh /app/OpenVoice_server/openvoice/start.sh
 
 # Provide permissions to execute the script
-RUN chmod +x /app/start.sh
+RUN chmod +x /app/OpenVoice_server/openvoice/start.sh
 
 # Run the startup script which installs libmagic and starts the server, when the container launches
-CMD ["bash", "/app/start.sh"]
+CMD ["bash", "/app/OpenVoice_server/openvoice/start.sh"]
