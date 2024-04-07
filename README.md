@@ -1,6 +1,8 @@
 # OpenVoice Server
 
 OpenVoice Server is a FastAPI application that provides endpoints for uploading audio files and synthesizing speech from text using a specified voice and style.
+It is built on top of the OpenVoice project, which is a versatile instant voice cloning system that can accurately clone the reference tone color and generate speech in multiple languages and accents.
+See: https://github.com/myshell-ai/OpenVoice
 
 ## Installation
 
