@@ -1,6 +1,8 @@
 import os
 import torch
 import se_extractor
+import io
+import magic
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from starlette.responses import FileResponse
@@ -44,6 +46,22 @@ async def upload_audio(file: UploadFile = File(...)):
     """
     try:
         contents = await file.read()
+
+        ALLOWED_EXTENSIONS = {'wav', 'mp3', 'flac', 'ogg'}
+        MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
+
+        if not file.filename.split('.')[-1] in ALLOWED_EXTENSIONS:
+            return {"error": "Invalid file type. Allowed types are: wav, mp3, flac, ogg"}
+
+        if len(contents) > MAX_FILE_SIZE:
+            return {"error": "File size is over limit. Max size is 5MB."}
+
+        # Note: we need to first write the file in order to check magic.
+        temp_file = io.BytesIO(contents)
+        file_format = magic.from_buffer(temp_file.read(), mime=True)
+
+        if 'audio' not in file_format:
+            return {"error": "Invalid file content."}
 
         # Make sure the resources directory exists
         os.makedirs("resources", exist_ok=True)
