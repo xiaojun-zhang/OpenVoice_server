@@ -32,7 +32,7 @@ source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
 
 class SynthesizeSpeechRequest(BaseModel):
     text: str
-    voice: Optional[str] = 'default_voice.wav'
+    voice: str
     style: Optional[str] = 'default'
     language: Optional[str] = 'English'
     speed: Optional[float] = 1.0
