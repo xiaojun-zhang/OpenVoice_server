@@ -146,4 +146,10 @@ async def synthesize_speech(request: SynthesizeSpeechRequest):
     result.headers["X-Elapsed-Time"] = str(elapsed_time)
     result.headers["X-Device-Used"] = device
 
+    # Add CORS headers
+    result.headers["Access-Control-Allow-Origin"] = "*"  # Required for CORS support
+    result.headers["Access-Control-Allow-Credentials"] = "true"  # Required for cookies, authorization headers with HTTPS
+    result.headers["Access-Control-Allow-Headers"] = "Origin, Content-Type, X-Amz-Date, Authorization, X-Api-Key, X-Amz-Security-Token, locale"
+    result.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+
     return result
