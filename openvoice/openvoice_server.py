@@ -7,6 +7,7 @@ import io
 import magic
 
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
+from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
 from typing import Optional
 from pydantic import BaseModel
@@ -14,6 +15,16 @@ from pydantic import BaseModel
 from api import BaseSpeakerTTS, ToneColorConverter
 
 app = FastAPI()
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
+
 
 # Initialize OpenVoice models
 ckpt_base = 'checkpoints/base_speakers/EN'
