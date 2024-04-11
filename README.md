@@ -68,7 +68,7 @@ This endpoint synthesizes speech from text using a specified voice and style.
 **Request Body:**
 
 - `text` (str): The text to be synthesized into speech.
-- `voice` str: The voice to be used for synthesis. This is the audio file label from the other endpoint.
+- `voice` (str): The voice to be used for synthesis. This is the audio file label from the other endpoint.
 - `style` (str, optional): The style to be used for synthesis. Defaults to 'default'. Options are: ['default', 'whispering', 'cheerful', 'terrified', 'angry', 'sad', 'friendly']
 - `language` (str, optional): The language to be used for synthesis. Defaults to 'English'.
 - `speed` (float, optional): The speed of the synthesized speech. Defaults to 1.0.
