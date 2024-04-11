@@ -99,7 +99,7 @@ async def upload_audio(audio_file_label: str = Form(...), file: UploadFile = Fil
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.post("/synthesize_speech/")
+@app.api_route("/synthesize_speech/", methods=['POST', 'GET'])
 async def synthesize_speech(request: SynthesizeSpeechRequest):
     """
     Synthesize speech from text using a specified voice and style.
