@@ -87,7 +87,7 @@ data = {
     "speed": 1.0
 }
 
-response = requests.get(url, json=data)
+response = requests.get(url, params=data)
 
 with open("output.wav", "wb") as f:
     f.write(response.content)
