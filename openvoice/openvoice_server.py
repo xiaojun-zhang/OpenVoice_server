@@ -25,7 +25,6 @@ app.add_middleware(
     allow_headers=["*"],  # Allows all headers
 )
 
-
 # Initialize OpenVoice models
 ckpt_base = 'checkpoints/base_speakers/EN'
 ckpt_converter = 'checkpoints/converter'
@@ -39,14 +38,6 @@ output_dir = 'outputs'
 os.makedirs(output_dir, exist_ok=True)
 
 source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
-
-
-class SynthesizeSpeechRequest(BaseModel):
-    text: str
-    voice: str
-    style: Optional[str] = 'default'
-    language: Optional[str] = 'English'
-    speed: Optional[float] = 1.0
 
 
 class UploadAudioRequest(BaseModel):
@@ -99,21 +90,38 @@ async def upload_audio(audio_file_label: str = Form(...), file: UploadFile = Fil
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.api_route("/synthesize_speech/", methods=['POST', 'GET'])
-async def synthesize_speech(request: SynthesizeSpeechRequest):
+@app.get("/synthesize_speech/")
+async def synthesize_speech(
+        text: str,
+        voice: str,
+        style: Optional[str] = 'default',
+        language: Optional[str] = 'English',
+        speed: Optional[float] = 1.0
+):
     """
     Synthesize speech from text using a specified voice and style.
 
-    :param request: The request parameters.
-    :type request: SynthesizeSpeechRequest
-    :return: Confirmation of successful synthesis.
-    :rtype: dict
+    This function takes in a text string and synthesizes speech in the specified voice and style.
+    The synthesized speech is returned as a .wav file.
+
+    :param text: The text to be synthesized into speech.
+    :type text: str
+    :param voice: The voice to be used for the synthesized speech.
+    :type voice: str
+    :param style: The style to be used for the synthesized speech, defaults to 'default'.
+    :type style: str, optional
+    :param language: The language of the text to be synthesized, defaults to 'English'.
+    :type language: str, optional
+    :param speed: The speed of the synthesized speech, defaults to 1.0.
+    :type speed: float, optional
+    :return: The synthesized speech as a .wav file.
+    :rtype: .wav file
     """
     start_time = time.time()
     try:
         # Retrieve the correct file based on the 'voice' parameter
         # It should match the 'audio_file_label' used while uploading
-        matching_files = [file for file in os.listdir("resources") if file.startswith(request.voice)]
+        matching_files = [file for file in os.listdir("resources") if file.startswith(voice)]
 
         if not matching_files:
             raise HTTPException(status_code=400, detail="No matching voice found.")
@@ -125,7 +133,7 @@ async def synthesize_speech(request: SynthesizeSpeechRequest):
 
         # Run the base speaker tts
         src_path = f'{output_dir}/tmp.wav'
-        base_speaker_tts.tts(request.text, src_path, speaker=request.style, language=request.language, speed=request.speed)
+        base_speaker_tts.tts(text, src_path, speaker=style, language=language, speed=speed)
 
         # Run the tone color converter
         encode_message = "@MyShell"

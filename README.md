@@ -63,7 +63,7 @@ This endpoint synthesizes speech from text using a specified voice and style.
 
 **Endpoint:** `/synthesize_speech/`
 
-**Method:** `POST`
+**Method:** `GET`
 
 **Request Body:**
 
@@ -87,7 +87,7 @@ data = {
     "speed": 1.0
 }
 
-response = requests.post(url, json=data)
+response = requests.get(url, json=data)
 
 with open("output.wav", "wb") as f:
     f.write(response.content)
