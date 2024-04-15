@@ -137,7 +137,7 @@ async def change_voice(reference_speaker: str = Form(...), file: UploadFile = Fi
         if not matching_files:
             raise HTTPException(status_code=400, detail="No matching reference speaker found.")
         reference_speaker_file = f'resources/{matching_files[0]}'
-        logging.info('reference_speaker_file:', reference_speaker_file)
+        logging.info(f'reference_speaker_file: {reference_speaker_file}')
         target_se, audio_name = se_extractor.get_se(reference_speaker_file, tone_color_converter, target_dir='processed', vad=True)
         save_path = f'{output_dir}/output_en_default.wav'
         logging.info('converting...')
