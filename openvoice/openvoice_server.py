@@ -103,12 +103,14 @@ async def base_tts(text: str, style: Optional[str] = 'default', language: Option
 
 
 @app.post("/change_voice/")
-async def change_voice(file: UploadFile = File(...)):
+async def change_voice(file: UploadFile = File(...), watermark: Optional[str] = "@MyShell"):
     """
     Change the voice of an existing audio file.
 
     :param file: The audio file to be changed.
     :type file: UploadFile
+    :param watermark: The watermark to be encoded in the voice conversion, defaults to '@MyShell'.
+    :type watermark: str, optional
     :return: The audio file with the changed voice.
     :rtype: .wav file
     """
@@ -122,7 +124,7 @@ async def change_voice(file: UploadFile = File(...)):
             src_se=source_se,
             tgt_se=target_se,
             output_path=save_path,
-            message="@MyShell")
+            message=watermark)
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
@@ -181,13 +183,11 @@ async def synthesize_speech(
         voice: str,
         style: Optional[str] = 'default',
         language: Optional[str] = 'English',
-        speed: Optional[float] = 1.0
+        speed: Optional[float] = 1.0,
+        watermark: Optional[str] = "@MyShell"
 ):
     """
     Synthesize speech from text using a specified voice and style.
-
-    This function takes in a text string and synthesizes speech in the specified voice and style.
-    The synthesized speech is returned as a .wav file.
 
     :param text: The text to be synthesized into speech.
     :type text: str
@@ -199,6 +199,8 @@ async def synthesize_speech(
     :type language: str, optional
     :param speed: The speed of the synthesized speech, defaults to 1.0.
     :type speed: float, optional
+    :param watermark: The watermark to be encoded in the voice conversion, defaults to '@MyShell'.
+    :type watermark: str, optional
     :return: The synthesized speech as a .wav file.
     :rtype: .wav file
     """
@@ -221,13 +223,12 @@ async def synthesize_speech(
         base_speaker_tts.tts(text, src_path, speaker=style, language=language, speed=speed)
 
         # Run the tone color converter
-        encode_message = "@MyShell"
         tone_color_converter.convert(
             audio_src_path=src_path,
             src_se=source_se,
             tgt_se=target_se,
             output_path=save_path,
-            message=encode_message)
+            message=watermark)
 
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
     except Exception as e:
