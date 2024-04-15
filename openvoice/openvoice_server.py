@@ -122,7 +122,10 @@ async def change_voice(reference_speaker: str = Form(...), file: UploadFile = Fi
     :rtype: .wav file
     """
     try:
-        logging.info('changing voice...')
+        logging.info(f'changing voice to {reference_speaker}...')
+        if watermark:
+            logging.info(f'watermark: {watermark}')
+
         contents = await file.read()
         temp_file = io.BytesIO(contents)
         logging.info('temp file received.')
