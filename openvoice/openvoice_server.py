@@ -71,6 +71,7 @@ async def change_base_speaker(speaker_name: str):
     :rtype: dict
     """
     try:
+        print(f'Changing base speaker to {speaker_name}')
         base_speaker_tts.load_ckpt(f'checkpoints/base_speakers/EN/{speaker_name}.pth')
         return {"message": f"Base speaker changed to {speaker_name} successfully."}
     except Exception as e:
