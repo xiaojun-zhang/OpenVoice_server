@@ -1,17 +1,14 @@
 import os
 import time
-
 import torch
 import se_extractor
 import io
 import magic
-
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
 from typing import Optional
 from pydantic import BaseModel
-
 from api import BaseSpeakerTTS, ToneColorConverter
 
 app = FastAPI()
@@ -42,6 +39,88 @@ source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
 
 class UploadAudioRequest(BaseModel):
     audio_file_label: str
+
+
+@app.post("/upload_base_speaker/")
+async def upload_base_speaker(file: UploadFile = File(...)):
+    """
+    Upload a .pth file for a new base speaker.
+
+    :param file: The .pth file to be uploaded.
+    :type file: UploadFile
+    :return: Confirmation of successful upload.
+    :rtype: dict
+    """
+    try:
+        contents = await file.read()
+        with open(f"checkpoints/base_speakers/EN/{file.filename}", "wb") as f:
+            f.write(contents)
+        return {"message": f"File {file.filename} uploaded successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/change_base_speaker/")
+async def change_base_speaker(speaker_name: str):
+    """
+    Change the base speaker.
+
+    :param speaker_name: The name of the new base speaker.
+    :type speaker_name: str
+    :return: Confirmation of successful change.
+    :rtype: dict
+    """
+    try:
+        base_speaker_tts.load_ckpt(f'checkpoints/base_speakers/EN/{speaker_name}.pth')
+        return {"message": f"Base speaker changed to {speaker_name} successfully."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/base_tts/")
+async def base_tts(text: str):
+    """
+    Perform text-to-speech conversion using only the base speaker.
+
+    :param text: The text to be converted to speech.
+    :type text: str
+    :return: The speech audio.
+    :rtype: .wav file
+    """
+    try:
+        save_path = f'{output_dir}/output_en_default.wav'
+        base_speaker_tts.tts(text, save_path)
+        result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/change_voice/")
+async def change_voice(file: UploadFile = File(...)):
+    """
+    Change the voice of an existing audio file.
+
+    :param file: The audio file to be changed.
+    :type file: UploadFile
+    :return: The audio file with the changed voice.
+    :rtype: .wav file
+    """
+    try:
+        contents = await file.read()
+        temp_file = io.BytesIO(contents)
+        target_se, audio_name = se_extractor.get_se(temp_file, tone_color_converter, target_dir='processed', vad=True)
+        save_path = f'{output_dir}/output_en_default.wav'
+        tone_color_converter.convert(
+            audio_src_path=temp_file,
+            src_se=source_se,
+            tgt_se=target_se,
+            output_path=save_path,
+            message="@MyShell")
+        result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/upload_audio/")
