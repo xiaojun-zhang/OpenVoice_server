@@ -103,10 +103,12 @@ async def base_tts(text: str, style: Optional[str] = 'default', language: Option
 
 
 @app.post("/change_voice/")
-async def change_voice(file: UploadFile = File(...), watermark: Optional[str] = "@MyShell"):
+async def change_voice(reference_speaker: str, file: UploadFile = File(...), watermark: Optional[str] = "@MyShell"):
     """
     Change the voice of an existing audio file.
 
+    :param reference_speaker: The name of the reference speaker.
+    :type reference_speaker: str
     :param file: The audio file to be changed.
     :type file: UploadFile
     :param watermark: The watermark to be encoded in the voice conversion, defaults to '@MyShell'.
@@ -117,7 +119,11 @@ async def change_voice(file: UploadFile = File(...), watermark: Optional[str] = 
     try:
         contents = await file.read()
         temp_file = io.BytesIO(contents)
-        target_se, audio_name = se_extractor.get_se(temp_file, tone_color_converter, target_dir='processed', vad=True)
+        matching_files = [file for file in os.listdir("resources") if file.startswith(reference_speaker)]
+        if not matching_files:
+            raise HTTPException(status_code=400, detail="No matching reference speaker found.")
+        reference_speaker_file = f'resources/{matching_files[0]}'
+        target_se, audio_name = se_extractor.get_se(reference_speaker_file, tone_color_converter, target_dir='processed', vad=True)
         save_path = f'{output_dir}/output_en_default.wav'
         tone_color_converter.convert(
             audio_src_path=temp_file,
