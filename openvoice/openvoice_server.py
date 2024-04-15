@@ -4,12 +4,16 @@ import torch
 import se_extractor
 import io
 import magic
+import logging
+
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
 from typing import Optional
 from pydantic import BaseModel
 from api import BaseSpeakerTTS, ToneColorConverter
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI()
 
@@ -104,7 +108,7 @@ async def base_tts(text: str, style: Optional[str] = 'default', language: Option
 
 
 @app.post("/change_voice/")
-async def change_voice(reference_speaker: str, file: UploadFile = File(...), watermark: Optional[str] = "@MyShell"):
+async def change_voice(reference_speaker: str = Form(...), file: UploadFile = File(...), watermark: Optional[str] = "@MyShell"):
     """
     Change the voice of an existing audio file.
 
@@ -118,25 +122,25 @@ async def change_voice(reference_speaker: str, file: UploadFile = File(...), wat
     :rtype: .wav file
     """
     try:
-        print('changing voice...')
+        logging.info('changing voice...')
         contents = await file.read()
         temp_file = io.BytesIO(contents)
-        print('len(contents):', len(contents))
+        logging.info('len(contents):', len(contents))
         matching_files = [file for file in os.listdir("resources") if file.startswith(reference_speaker)]
         if not matching_files:
             raise HTTPException(status_code=400, detail="No matching reference speaker found.")
         reference_speaker_file = f'resources/{matching_files[0]}'
-        print('reference_speaker_file:', reference_speaker_file)
+        logging.info('reference_speaker_file:', reference_speaker_file)
         target_se, audio_name = se_extractor.get_se(reference_speaker_file, tone_color_converter, target_dir='processed', vad=True)
         save_path = f'{output_dir}/output_en_default.wav'
-        print('converting...')
+        logging.info('converting...')
         tone_color_converter.convert(
             audio_src_path=temp_file,
             src_se=source_se,
             tgt_se=target_se,
             output_path=save_path,
             message=watermark)
-        print('Streaming response...')
+        logging.info('Streaming response...')
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
