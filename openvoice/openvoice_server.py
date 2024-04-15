@@ -13,7 +13,7 @@ from typing import Optional
 from pydantic import BaseModel
 from api import BaseSpeakerTTS, ToneColorConverter
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
@@ -75,7 +75,6 @@ async def change_base_speaker(speaker_name: str):
     :rtype: dict
     """
     try:
-        print(f'Changing base speaker to {speaker_name}')
         base_speaker_tts.load_ckpt(f'checkpoints/base_speakers/EN/{speaker_name}.pth')
         return {"message": f"Base speaker changed to {speaker_name} successfully."}
     except Exception as e:
@@ -123,31 +122,24 @@ async def change_voice(reference_speaker: str = Form(...), file: UploadFile = Fi
     """
     try:
         logging.info(f'changing voice to {reference_speaker}...')
-        logging.info(f'type of reference_speaker: {type(reference_speaker)}')
+
         if watermark:
             logging.info(f'watermark: {watermark}')
 
         contents = await file.read()
         temp_file = io.BytesIO(contents)
-        logging.info('temp file received.')
-        logging.info(os.listdir("resources"))
-        logging.info('---')
         matching_files = [file for file in os.listdir("resources") if file.startswith(str(reference_speaker))]
-        logging.info(f'matching_files: {matching_files}')
         if not matching_files:
             raise HTTPException(status_code=400, detail="No matching reference speaker found.")
         reference_speaker_file = f'resources/{matching_files[0]}'
-        logging.info(f'reference_speaker_file: {reference_speaker_file}')
         target_se, audio_name = se_extractor.get_se(reference_speaker_file, tone_color_converter, target_dir='processed', vad=True)
         save_path = f'{output_dir}/output_en_default.wav'
-        logging.info('converting...')
         tone_color_converter.convert(
             audio_src_path=temp_file,
             src_se=source_se,
             tgt_se=target_se,
             output_path=save_path,
             message=watermark)
-        logging.info('Streaming response...')
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
