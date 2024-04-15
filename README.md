@@ -85,7 +85,7 @@ import requests
 
 url = "http://localhost:8000/change_voice/"
 file = open("example.wav", "rb")
-data = {"reference_speaker": "example_speaker"}
+data = {"reference_speaker": "example_label"}
 
 response = requests.post(url, data=data, files={"file": file})
 
