@@ -78,18 +78,24 @@ async def change_base_speaker(speaker_name: str):
 
 
 @app.get("/base_tts/")
-async def base_tts(text: str):
+async def base_tts(text: str, style: Optional[str] = 'default', language: Optional[str] = 'English', speed: Optional[float] = 1.0):
     """
     Perform text-to-speech conversion using only the base speaker.
 
     :param text: The text to be converted to speech.
     :type text: str
+    :param style: The style to be used for the synthesized speech, defaults to 'default'.
+    :type style: str, optional
+    :param language: The language of the text to be synthesized, defaults to 'English'.
+    :type language: str, optional
+    :param speed: The speed of the synthesized speech, defaults to 1.0.
+    :type speed: float, optional
     :return: The speech audio.
     :rtype: .wav file
     """
     try:
         save_path = f'{output_dir}/output_en_default.wav'
-        base_speaker_tts.tts(text, save_path)
+        base_speaker_tts.tts(text, save_path, speaker=style, language=language, speed=speed)
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
