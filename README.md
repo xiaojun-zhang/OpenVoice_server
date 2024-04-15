@@ -95,6 +95,23 @@ This endpoint allows you to upload an audio file that will be used as the refere
 - `audio_file_label` (str): The label for the audio file.
 - `file` (file): The audio file to be uploaded.
 
+**Example Request:**
+
+```python
+import requests
+
+ 
+url = "http://localhost:8000/upload_audio/"
+audio_file_label = "example_label"
+file = open("example.wav", "rb")
+
+ 
+response = requests.post(url, data={"audio_file_label": audio_file_label}, files={"file": file})
+
+ 
+print(response.json())
+```
+
 ### 6. Synthesize Speech
 
 This endpoint synthesizes speech from text using a specified voice and style.
