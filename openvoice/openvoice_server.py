@@ -45,42 +45,6 @@ class UploadAudioRequest(BaseModel):
     audio_file_label: str
 
 
-@app.post("/upload_base_speaker/")
-async def upload_base_speaker(file: UploadFile = File(...)):
-    """
-    Upload a .pth file for a new base speaker.
-
-    :param file: The .pth file to be uploaded.
-    :type file: UploadFile
-    :return: Confirmation of successful upload.
-    :rtype: dict
-    """
-    try:
-        contents = await file.read()
-        with open(f"checkpoints/base_speakers/EN/{file.filename}", "wb") as f:
-            f.write(contents)
-        return {"message": f"File {file.filename} uploaded successfully."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/change_base_speaker/")
-async def change_base_speaker(speaker_name: str):
-    """
-    Change the base speaker.
-
-    :param speaker_name: The name of the new base speaker.
-    :type speaker_name: str
-    :return: Confirmation of successful change.
-    :rtype: dict
-    """
-    try:
-        base_speaker_tts.load_ckpt(f'checkpoints/base_speakers/EN/{speaker_name}.pth')
-        return {"message": f"Base speaker changed to {speaker_name} successfully."}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.get("/base_tts/")
 async def base_tts(text: str, style: Optional[str] = 'default', language: Optional[str] = 'English', speed: Optional[float] = 1.0):
     """

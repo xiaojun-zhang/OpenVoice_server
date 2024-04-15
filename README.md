@@ -1,6 +1,6 @@
 # OpenVoice Server
 
-OpenVoice Server is a FastAPI application that provides endpoints for uploading audio files, changing the base speaker, performing text-to-speech conversion, and synthesizing speech from text using a specified voice and style.
+OpenVoice Server is a FastAPI application that provides endpoints for uploading audio files, performing text-to-speech conversion, and synthesizing speech from text using a specified voice and style.
 It is built on top of the OpenVoice project, which is a versatile instant voice cloning system that can accurately clone the reference tone color and generate speech in multiple languages and accents.
 See: https://github.com/myshell-ai/OpenVoice
 
@@ -30,57 +30,7 @@ uvicorn openvoice_server:app --host 0.0.0.0 --port 8000
 
 The server provides the following endpoints:
 
-### 1. Upload Base Speaker
-
-This endpoint allows you to upload a .pth file for a new base speaker.
-
-**Endpoint:** `/upload_base_speaker/`
-
-**Method:** `POST`
-
-**Request Body:**
-
-- `file` (file): The .pth file to be uploaded.
-
-**Example Request:**
-
-```python
-import requests
-
-url = "http://localhost:8000/upload_base_speaker/"
-file = open("example_speaker.pth", "rb")
-
-response = requests.post(url, files={"file": file})
-
-print(response.json())
-```
-
-### 2. Change Base Speaker
-
-This endpoint allows you to change the base speaker.
-
-**Endpoint:** `/change_base_speaker/`
-
-**Method:** `POST`
-
-**Request Body:**
-
-- `speaker_name` (str): The name of the new base speaker.
-
-**Example Request:**
-
-```python
-import requests
-
-url = "http://localhost:8000/change_base_speaker/"
-data = {"speaker_name": "example_speaker"}
-
-response = requests.post(url, data=data)
-
-print(response.json())
-```
-
-### 3. Base Text-to-Speech
+### 1. Base Text-to-Speech
 
 This endpoint performs text-to-speech conversion using only the base speaker.
 
@@ -114,7 +64,7 @@ with open("output.wav", "wb") as f:
     f.write(response.content)
 ```
 
-### 4. Change Voice
+### 2. Change Voice
 
 This endpoint allows you to change the voice of an existing audio file.
 
@@ -143,7 +93,7 @@ with open("output.wav", "wb") as f:
     f.write(response.content)
 ```
 
-### 5. Upload Audio
+### 3. Upload Audio
 
 This endpoint allows you to upload an audio file that will be used as the reference audio for speech synthesis.
 
@@ -170,7 +120,7 @@ response = requests.post(url, data={"audio_file_label": audio_file_label}, files
 print(response.json())
 ```
 
-### 6. Synthesize Speech
+### 4. Synthesize Speech
 
 This endpoint synthesizes speech from text using a specified voice and style.
 
