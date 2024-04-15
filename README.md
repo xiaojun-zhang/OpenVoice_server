@@ -42,6 +42,19 @@ This endpoint allows you to upload a .pth file for a new base speaker.
 
 - `file` (file): The .pth file to be uploaded.
 
+**Example Request:**
+
+```python
+import requests
+
+url = "http://localhost:8000/upload_base_speaker/"
+file = open("example_speaker.pth", "rb")
+
+response = requests.post(url, files={"file": file})
+
+print(response.json())
+```
+
 ### 2. Change Base Speaker
 
 This endpoint allows you to change the base speaker.
@@ -53,6 +66,19 @@ This endpoint allows you to change the base speaker.
 **Request Body:**
 
 - `speaker_name` (str): The name of the new base speaker.
+
+**Example Request:**
+
+```python
+import requests
+
+url = "http://localhost:8000/change_base_speaker/"
+data = {"speaker_name": "example_speaker"}
+
+response = requests.post(url, data=data)
+
+print(response.json())
+```
 
 ### 3. Base Text-to-Speech
 
@@ -69,6 +95,25 @@ This endpoint performs text-to-speech conversion using only the base speaker.
 - `language` (str, optional): The language of the text to be synthesized. Defaults to 'English'.
 - `speed` (float, optional): The speed of the synthesized speech. Defaults to 1.0.
 
+**Example Request:**
+
+```python
+import requests
+
+url = "http://localhost:8000/base_tts/"
+params = {
+    "text": "Hello, world!",
+    "style": "default",
+    "language": "English",
+    "speed": 1.0
+}
+
+response = requests.get(url, params=params)
+
+with open("output.wav", "wb") as f:
+    f.write(response.content)
+```
+
 ### 4. Change Voice
 
 This endpoint allows you to change the voice of an existing audio file.
@@ -81,6 +126,20 @@ This endpoint allows you to change the voice of an existing audio file.
 
 - `file` (file): The audio file to be changed.
 - `watermark` (str, optional): The watermark to be encoded in the voice conversion. Defaults to '@MyShell'.
+
+**Example Request:**
+
+```python
+import requests
+
+url = "http://localhost:8000/change_voice/"
+file = open("example.wav", "rb")
+
+response = requests.post(url, files={"file": file})
+
+with open("output.wav", "wb") as f:
+    f.write(response.content)
+```
 
 ### 5. Upload Audio
 
@@ -100,15 +159,12 @@ This endpoint allows you to upload an audio file that will be used as the refere
 ```python
 import requests
 
- 
 url = "http://localhost:8000/upload_audio/"
 audio_file_label = "example_label"
 file = open("example.wav", "rb")
 
- 
 response = requests.post(url, data={"audio_file_label": audio_file_label}, files={"file": file})
 
- 
 print(response.json())
 ```
 
