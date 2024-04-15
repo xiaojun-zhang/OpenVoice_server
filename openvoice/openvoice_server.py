@@ -118,20 +118,25 @@ async def change_voice(reference_speaker: str, file: UploadFile = File(...), wat
     :rtype: .wav file
     """
     try:
+        print('changing voice...')
         contents = await file.read()
         temp_file = io.BytesIO(contents)
+        print('len(contents):', len(contents))
         matching_files = [file for file in os.listdir("resources") if file.startswith(reference_speaker)]
         if not matching_files:
             raise HTTPException(status_code=400, detail="No matching reference speaker found.")
         reference_speaker_file = f'resources/{matching_files[0]}'
+        print('reference_speaker_file:', reference_speaker_file)
         target_se, audio_name = se_extractor.get_se(reference_speaker_file, tone_color_converter, target_dir='processed', vad=True)
         save_path = f'{output_dir}/output_en_default.wav'
+        print('converting...')
         tone_color_converter.convert(
             audio_src_path=temp_file,
             src_se=source_se,
             tgt_se=target_se,
             output_path=save_path,
             message=watermark)
+        print('Streaming response...')
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
