@@ -130,6 +130,7 @@ async def change_voice(reference_speaker: str = Form(...), file: UploadFile = Fi
         temp_file = io.BytesIO(contents)
         logging.info('temp file received.')
         matching_files = [file for file in os.listdir("resources") if file.startswith(reference_speaker)]
+        logging.info('matching_files:', matching_files)
         if not matching_files:
             raise HTTPException(status_code=400, detail="No matching reference speaker found.")
         reference_speaker_file = f'resources/{matching_files[0]}'
