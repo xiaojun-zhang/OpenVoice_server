@@ -130,6 +130,8 @@ async def change_voice(reference_speaker: str = Form(...), file: UploadFile = Fi
         contents = await file.read()
         temp_file = io.BytesIO(contents)
         logging.info('temp file received.')
+        logging.info(os.listdir("resources"))
+        logging.info('---')
         matching_files = [file for file in os.listdir("resources") if file.startswith(str(reference_speaker))]
         logging.info(f'matching_files: {matching_files}')
         if not matching_files:
