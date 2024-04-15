@@ -124,6 +124,7 @@ This endpoint allows you to change the voice of an existing audio file.
 
 **Request Body:**
 
+- `reference_speaker` (str): The name of the reference speaker.
 - `file` (file): The audio file to be changed.
 - `watermark` (str, optional): The watermark to be encoded in the voice conversion. Defaults to '@MyShell'.
 
@@ -134,8 +135,9 @@ import requests
 
 url = "http://localhost:8000/change_voice/"
 file = open("example.wav", "rb")
+data = {"reference_speaker": "example_speaker"}
 
-response = requests.post(url, files={"file": file})
+response = requests.post(url, data=data, files={"file": file})
 
 with open("output.wav", "wb") as f:
     f.write(response.content)
