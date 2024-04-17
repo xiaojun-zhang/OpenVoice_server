@@ -137,6 +137,12 @@ This endpoint synthesizes speech from text using a specified voice and style.
 - `speed` (float, optional): The speed of the synthesized speech. Defaults to 1.0.
 - `watermark` (str, optional): The watermark to be encoded in the voice conversion. Defaults to '@MyShell'.
 
+Note: OpenVoice comes with a few voices as examples, the following are available:
+- example_reference
+- demo_speaker0
+- demo_speaker1
+- demo_speaker2
+
 **Example Request:**
 
 ```python
