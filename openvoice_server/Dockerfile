@@ -47,5 +47,8 @@ COPY start.sh /app/OpenVoice_server/openvoice/start.sh
 # Provide permissions to execute the script
 RUN chmod +x /app/OpenVoice_server/openvoice/start.sh
 
+# Start the server in the background, wait for a minute, then kill it, this is because on first run, there are a few additional things the server will download.
+RUN bash -c "uvicorn openvoice_server:app --host '0.0.0.0' --port 8000 & sleep 60 && pkill -f 'uvicorn'"
+
 # Run the startup script which installs libmagic and starts the server, when the container launches
 CMD ["bash", "/app/OpenVoice_server/openvoice/start.sh"]
