@@ -54,13 +54,13 @@ async def startup_event():
 
 
 @app.get("/base_tts/")
-async def base_tts(text: str, style: Optional[str] = 'default', language: Optional[str] = 'EN_NEWEST', speed: Optional[float] = 1.0):
+async def base_tts(text: str, style: Optional[str] = 'EN_NEWEST', language: Optional[str] = 'EN_NEWEST', speed: Optional[float] = 1.0):
     """
     Perform text-to-speech conversion using only the base speaker.
 
     :param text: The text to be converted to speech.
     :type text: str
-    :param style: The style to be used for the synthesized speech, defaults to 'default'.
+    :param style: The style to be used for the synthesized speech, defaults to 'EN_NEWEST'.
     :type style: str, optional
     :param language: The language of the text to be synthesized, defaults to 'EN_NEWEST'.
     :type language: str, optional
