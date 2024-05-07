@@ -7,15 +7,6 @@ WORKDIR /app
 # Add current directory files to /app in the container
 ADD . /app
 
-RUN pip install --no-binary :all: mecab-python3==1.0.6
-
-# Install MeloTTS
-RUN pip install --no-binary :all: mecab-python3==1.0.6 && \
-  git clone https://github.com/myshell-ai/MeloTTS.git && \
-  cd MeloTTS && \
-  pip install -e . && \
-  python -m unidic download
-
 # Clone the git repo
 RUN git clone https://github.com/ValyrianTech/OpenVoice_server.git
 
@@ -30,6 +21,13 @@ ENV PATH /opt/conda/envs/openvoice/bin:$PATH
 ENV PYTHONUNBUFFERED=1
 
 # Install the OpenVoice package and uvicorn for FastAPI
+# Install MeloTTS
+RUN git clone https://github.com/myshell-ai/MeloTTS.git && \
+  cd MeloTTS && \
+  pip install -e . && \
+  python -m unidic download && \
+  cd ..
+
 RUN pip install -e . uvicorn ffmpeg
 RUN pip install -r requirements.txt
 
