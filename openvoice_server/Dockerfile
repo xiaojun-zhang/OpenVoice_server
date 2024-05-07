@@ -8,7 +8,7 @@ WORKDIR /app
 ADD . /app
 
 # Install libmecab
-RUN apt install -y mecab libmecab-dev
+RUN pip install mecab-python3==1.0.6
 
 # Install MeloTTS
 RUN git clone https://github.com/myshell-ai/MeloTTS.git && \
