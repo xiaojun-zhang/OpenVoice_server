@@ -35,7 +35,7 @@ RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install -y unzip wget
 RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_v2_0417.zip
 RUN unzip checkpoints_v2_0417 -d ./openvoice
-RUN rm checkpoints_v2_0417
+RUN rm checkpoints_v2_0417.zip
 RUN mv resources openvoice/resources
 
 # Make port 8000 available to the world outside this container
