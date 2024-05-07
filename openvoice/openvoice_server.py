@@ -38,7 +38,7 @@ tone_color_converter.load_ckpt('checkpoints_v2/converter/checkpoint.pth')
 output_dir = 'outputs'
 os.makedirs(output_dir, exist_ok=True)
 
-source_se = torch.load(f'{ckpt_base}/en_newest.pth').to(device)
+source_se = torch.load(f'{ckpt_base}/en-newest.pth').to(device)
 
 
 class UploadAudioRequest(BaseModel):
