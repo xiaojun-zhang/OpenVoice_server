@@ -7,11 +7,9 @@ WORKDIR /app
 # Add current directory files to /app in the container
 ADD . /app
 
-# Install libmecab
-RUN pip install mecab-python3==1.0.6
-
 # Install MeloTTS
-RUN git clone https://github.com/myshell-ai/MeloTTS.git && \
+RUN pip install mecab-python3==1.0.6 && \
+  git clone https://github.com/myshell-ai/MeloTTS.git && \
   cd MeloTTS && \
   pip install -e . && \
   python -m unidic download
