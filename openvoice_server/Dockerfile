@@ -7,6 +7,12 @@ WORKDIR /app
 # Add current directory files to /app in the container
 ADD . /app
 
+# Install MeloTTS
+RUN git clone https://github.com/myshell-ai/MeloTTS.git && \
+  cd MeloTTS && \
+  pip install -e . && \
+  python -m unidic download
+
 # Clone the git repo
 RUN git clone https://github.com/ValyrianTech/OpenVoice_server.git
 
@@ -26,9 +32,9 @@ RUN pip install -r requirements.txt
 
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
-RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_1226.zip
-RUN unzip checkpoints_1226.zip -d ./openvoice
-RUN rm checkpoints_1226.zip
+RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_v2_0417.zip
+RUN unzip checkpoints_v2_0417 -d ./openvoice
+RUN rm checkpoints_v2_0417
 RUN mv resources openvoice/resources
 
 # Make port 8000 available to the world outside this container
