@@ -4,6 +4,11 @@ OpenVoice Server is a FastAPI application that provides endpoints for uploading 
 It is built on top of the OpenVoice project, which is a versatile instant voice cloning system that can accurately clone the reference tone color and generate speech in multiple languages and accents.
 See: https://github.com/myshell-ai/OpenVoice
 
+## Runpod template
+I have provided an easy to deploy one-click template for Runpod, for those who want to quickly deploy the OpenVoice Server on a Runpod instance:
+
+https://runpod.io/console/deploy?template=6uvya46w7n&ref=2vdt3dn9
+
 ## Installation
 
 1. Clone the repository:
