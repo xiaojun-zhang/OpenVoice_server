@@ -34,7 +34,7 @@ RUN pip install -r requirements.txt
 # Download and extract the checkpoint file
 RUN apt-get update && apt-get install -y unzip wget
 RUN wget https://myshell-public-repo-hosting.s3.amazonaws.com/openvoice/checkpoints_v2_0417.zip
-RUN unzip checkpoints_v2_0417 -d ./openvoice
+RUN unzip checkpoints_v2_0417.zip -d ./openvoice
 RUN rm checkpoints_v2_0417.zip
 RUN mv resources openvoice/resources
 
