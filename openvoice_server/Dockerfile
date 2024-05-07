@@ -7,6 +7,9 @@ WORKDIR /app
 # Add current directory files to /app in the container
 ADD . /app
 
+# Install libmecab
+RUN apt-get install mecab libmecab-dev
+
 # Install MeloTTS
 RUN git clone https://github.com/myshell-ai/MeloTTS.git && \
   cd MeloTTS && \
