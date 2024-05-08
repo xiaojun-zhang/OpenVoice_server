@@ -73,13 +73,13 @@ async def base_tts(text: str, style: Optional[str] = 'EN_NEWEST', language: Opti
         speaker_key = style.lower().replace('_', '-')
         model = TTS(language=language, device=device)
         print('melo model keys:')
-        print(model.hps.data.spk2id.keys())
+        keys = model.hps.data.spk2id.keys()
         save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
         model.tts_to_file(text, model.hps.data.spk2id[speaker_key], save_path, speed=speed)
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(keys))
 
 
 @app.post("/change_voice/")
