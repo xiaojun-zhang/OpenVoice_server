@@ -67,26 +67,23 @@ async def startup_event():
 
 
 @app.get("/base_tts/")
-async def base_tts(text: str, style: Optional[str] = 'EN-Newest', language: Optional[str] = 'EN_NEWEST', speed: Optional[float] = 1.0):
+async def base_tts(text: str, accent: Optional[str] = 'en-newest', speed: Optional[float] = 1.0):
     """
     Perform text-to-speech conversion using only the base speaker.
 
     :param text: The text to be converted to speech.
     :type text: str
-    :param style: The style to be used for the synthesized speech, defaults to 'EN-Newest'.
-    :type style: str, optional
-    :param language: The language of the text to be synthesized, defaults to 'EN_NEWEST'.
-    :type language: str, optional
+    :param accent: The accent to be used for the synthesized speech, defaults to 'en-newest'.
+    :type accent: str, optional
     :param speed: The speed of the synthesized speech, defaults to 1.0.
     :type speed: float, optional
     :return: The speech audio.
     :rtype: .wav file
     """
     try:
-        speaker_key = style
-        model = TTS(language=language, device=device)
-        save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
-        model.tts_to_file(text, model.hps.data.spk2id[speaker_key], save_path, speed=speed)
+        model = TTS(language=key_map[accent][1], device=device)
+        save_path = f'{output_dir}/output_v2_{accent}.wav'
+        model.tts_to_file(text, model.hps.data.spk2id[key_map[accent][0]], save_path, speed=speed)
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
