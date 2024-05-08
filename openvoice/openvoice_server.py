@@ -52,7 +52,7 @@ key_map = {'en-newest': ('EN-Newest', 'EN_NEWEST'),
            'kr': ('KR', 'KR'),
            'zh': ('ZH', 'ZH')
            }
-# source_se = torch.load(f'{ckpt_base}/en-newest.pth').to(device)
+
 source_se = {
     "en-newest": torch.load(f'{ckpt_base}/en-newest.pth').to(device),
     "en-us": torch.load(f'{ckpt_base}/en-us.pth').to(device),
@@ -231,24 +231,14 @@ async def synthesize_speech(
 
         target_se, audio_name = se_extractor.get_se(reference_speaker, tone_color_converter, target_dir='processed', vad=True)
 
-        logging.info('1')
         # Run the base speaker tts
         src_path = f'{output_dir}/tmp.wav'
-        base_speaker = accent
         model = TTS(language=key_map[accent][1], device=device)
         logging.info(f'model keys: {model.hps.data.spk2id.keys()}')
-        save_path = f'{output_dir}/output_v2_{base_speaker}.wav'
-        logging.info('2')
-        if base_speaker in base_speakers:
-            start_time2 = time.time()
-            # source_se = torch.load(f'{ckpt_base}/{base_speaker}.pth').to(device)
-            stop_time2 = time.time()
-            logging.info(f'Loaded base speaker embedding in {stop_time2 - start_time2} seconds.')
-        else:
-            logging.error(f'Invalid base speaker: {base_speaker}')
-        logging.info('3')
+        save_path = f'{output_dir}/output_v2_{accent}.wav'
+
         model.tts_to_file(text, model.hps.data.spk2id[key_map[accent][0]], src_path, speed=speed)
-        logging.info('4')
+
         # Run the tone color converter
         tone_color_converter.convert(
             audio_src_path=src_path,
@@ -256,7 +246,7 @@ async def synthesize_speech(
             tgt_se=target_se,
             output_path=save_path,
             message=watermark)
-        logging.info('5')
+
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
