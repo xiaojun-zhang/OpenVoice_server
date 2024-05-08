@@ -54,13 +54,13 @@ async def startup_event():
 
 
 @app.get("/base_tts/")
-async def base_tts(text: str, style: Optional[str] = 'EN_NEWEST', language: Optional[str] = 'EN_NEWEST', speed: Optional[float] = 1.0):
+async def base_tts(text: str, style: Optional[str] = 'EN-Newest', language: Optional[str] = 'EN_NEWEST', speed: Optional[float] = 1.0):
     """
     Perform text-to-speech conversion using only the base speaker.
 
     :param text: The text to be converted to speech.
     :type text: str
-    :param style: The style to be used for the synthesized speech, defaults to 'EN_NEWEST'.
+    :param style: The style to be used for the synthesized speech, defaults to 'EN-Newest'.
     :type style: str, optional
     :param language: The language of the text to be synthesized, defaults to 'EN_NEWEST'.
     :type language: str, optional
@@ -70,16 +70,14 @@ async def base_tts(text: str, style: Optional[str] = 'EN_NEWEST', language: Opti
     :rtype: .wav file
     """
     try:
-        speaker_key = style.lower().replace('_', '-')
+        speaker_key = style
         model = TTS(language=language, device=device)
-        print('melo model keys:')
-        keys = model.hps.data.spk2id.keys()
         save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
         model.tts_to_file(text, model.hps.data.spk2id[speaker_key], save_path, speed=speed)
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(keys))
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/change_voice/")
