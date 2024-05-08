@@ -40,6 +40,18 @@ os.makedirs(output_dir, exist_ok=True)
 
 # Available base speakers
 base_speakers = ['en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'jp', 'kr', 'zh']
+key_map = {'en-newest': ('EN_Newest', 'EN_NEWEST'),
+           'en-us': ('EN-US', 'EN'),
+           'en-br': ('EN-BR', 'EN'),
+           'en-india': ('EN_INDIA', 'EN'),
+           'en-au': ('EN-AU', 'EN'),
+           'en-default': ('EN-Default', 'EN'),
+           'es': ('ES', 'ES'),
+           'fr': ('FR', 'FR'),
+           'jp': ('JP', 'JP'),
+           'kr': ('KR', 'KR'),
+           'zh': ('ZH', 'ZH')
+           }
 source_se = torch.load(f'{ckpt_base}/en-newest.pth').to(device)
 
 
@@ -171,8 +183,7 @@ async def upload_audio(audio_file_label: str = Form(...), file: UploadFile = Fil
 async def synthesize_speech(
         text: str,
         voice: str,
-        style: Optional[str] = 'en-newest',
-        language: Optional[str] = 'EN_NEWEST',
+        accent: Optional[str] = 'en-newest',
         speed: Optional[float] = 1.0,
         watermark: Optional[str] = "@MyShell"
 ):
@@ -183,10 +194,8 @@ async def synthesize_speech(
     :type text: str
     :param voice: The voice to be used for the synthesized speech.
     :type voice: str
-    :param style: The style to be used for the synthesized speech, defaults to 'EN-Newest'.
-    :type style: str, optional
-    :param language: The language of the text to be synthesized, defaults to 'EN_NEWEST'.
-    :type language: str, optional
+    :param accent: The accent to be used for the synthesized speech, defaults to 'en-newest'.
+    :type accent: str, optional
     :param speed: The speed of the synthesized speech, defaults to 1.0.
     :type speed: float, optional
     :param watermark: The watermark to be encoded in the voice conversion, defaults to '@MyShell'.
@@ -213,20 +222,20 @@ async def synthesize_speech(
 
         # Run the base speaker tts
         src_path = f'{output_dir}/tmp.wav'
-        speaker_key = style
-        model = TTS(language=language, device=device)
+        base_speaker = accent
+        model = TTS(language=key_map[accent][1], device=device)
         logging.info(f'model keys: {model.hps.data.spk2id.keys()}')
-        save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
+        save_path = f'{output_dir}/output_v2_{base_speaker}.wav'
 
-        if speaker_key in base_speakers:
+        if base_speaker in base_speakers:
             start_time2 = time.time()
-            source_se = torch.load(f'checkpoints_v2/base_speakers/ses/{speaker_key}.pth', map_location=device)
+            source_se = torch.load(f'checkpoints_v2/base_speakers/ses/{base_speaker}.pth', map_location=device)
             stop_time2 = time.time()
             logging.info(f'Loaded base speaker embedding in {stop_time2 - start_time2} seconds.')
         else:
-            logging.error(f'Invalid base speaker: {speaker_key}')
+            logging.error(f'Invalid base speaker: {base_speaker}')
 
-        model.tts_to_file(text, model.hps.data.spk2id[speaker_key], src_path, speed=speed)
+        model.tts_to_file(text, model.hps.data.spk2id[key_map[accent][0]], src_path, speed=speed)
 
         # Run the tone color converter
         tone_color_converter.convert(
