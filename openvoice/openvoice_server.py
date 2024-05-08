@@ -171,7 +171,7 @@ async def upload_audio(audio_file_label: str = Form(...), file: UploadFile = Fil
 async def synthesize_speech(
         text: str,
         voice: str,
-        style: Optional[str] = 'EN-Newest',
+        style: Optional[str] = 'en-newest',
         language: Optional[str] = 'EN_NEWEST',
         speed: Optional[float] = 1.0,
         watermark: Optional[str] = "@MyShell"
