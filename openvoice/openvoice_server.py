@@ -215,6 +215,7 @@ async def synthesize_speech(
         model = TTS(language=language, device=device)
         logging.info(f'model keys: {model.hps.data.spk2id.keys()}')
         save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
+        source_se = torch.load(f'checkpoints_v2/base_speakers/ses/{speaker_key}.pth', map_location=device)
         model.tts_to_file(text, model.hps.data.spk2id[speaker_key], src_path, speed=speed)
 
         # Run the tone color converter
