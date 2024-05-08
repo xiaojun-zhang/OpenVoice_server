@@ -213,6 +213,7 @@ async def synthesize_speech(
         src_path = f'{output_dir}/tmp.wav'
         speaker_key = style
         model = TTS(language=language, device=device)
+        logging.info(f'model keys: {model.hps.data.spk2id.keys()}')
         save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
         model.tts_to_file(text, model.hps.data.spk2id[speaker_key], src_path, speed=speed)
 
