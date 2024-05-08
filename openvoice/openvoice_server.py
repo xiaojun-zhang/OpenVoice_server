@@ -52,7 +52,21 @@ key_map = {'en-newest': ('EN-Newest', 'EN_NEWEST'),
            'kr': ('KR', 'KR'),
            'zh': ('ZH', 'ZH')
            }
-source_se = torch.load(f'{ckpt_base}/en-newest.pth').to(device)
+# source_se = torch.load(f'{ckpt_base}/en-newest.pth').to(device)
+source_se = {
+    "en-newest": torch.load(f'{ckpt_base}/en-newest.pth').to(device),
+    "en-us": torch.load(f'{ckpt_base}/en-us.pth').to(device),
+    "en-br": torch.load(f'{ckpt_base}/en-br.pth').to(device),
+    "en-india": torch.load(f'{ckpt_base}/en-india.pth').to(device),
+    "en-au": torch.load(f'{ckpt_base}/en-au.pth').to(device),
+    "en-default": torch.load(f'{ckpt_base}/en-default.pth').to(device),
+    "es": torch.load(f'{ckpt_base}/es.pth').to(device),
+    "fr": torch.load(f'{ckpt_base}/fr.pth').to(device),
+    "jp": torch.load(f'{ckpt_base}/jp.pth').to(device),
+    "kr": torch.load(f'{ckpt_base}/kr.pth').to(device),
+    "zh": torch.load(f'{ckpt_base}/zh.pth').to(device)
+}
+logging.info('Loaded base speakers.')
 
 
 class UploadAudioRequest(BaseModel):
@@ -120,7 +134,7 @@ async def change_voice(reference_speaker: str = Form(...), file: UploadFile = Fi
         save_path = f'{output_dir}/output_v2_{reference_speaker}.wav'
         tone_color_converter.convert(
             audio_src_path=temp_file,
-            src_se=source_se,
+            src_se=source_se['en-newest'],
             tgt_se=target_se,
             output_path=save_path,
             message=watermark)
@@ -238,7 +252,7 @@ async def synthesize_speech(
         # Run the tone color converter
         tone_color_converter.convert(
             audio_src_path=src_path,
-            src_se=source_se,
+            src_se=source_se[accent],
             tgt_se=target_se,
             output_path=save_path,
             message=watermark)
