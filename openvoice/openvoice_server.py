@@ -227,7 +227,7 @@ async def synthesize_speech(
         logging.info('2')
         if base_speaker in base_speakers:
             start_time2 = time.time()
-            source_se = torch.load(f'{ckpt_base}/{base_speaker}.pth').to(device)
+            # source_se = torch.load(f'{ckpt_base}/{base_speaker}.pth').to(device)
             stop_time2 = time.time()
             logging.info(f'Loaded base speaker embedding in {stop_time2 - start_time2} seconds.')
         else:
