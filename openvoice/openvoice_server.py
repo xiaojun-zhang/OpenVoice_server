@@ -38,6 +38,8 @@ tone_color_converter.load_ckpt('checkpoints_v2/converter/checkpoint.pth')
 output_dir = 'outputs'
 os.makedirs(output_dir, exist_ok=True)
 
+# Available base speakers
+base_speakers = ['en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'jp', 'kr', 'zh']
 source_se = torch.load(f'{ckpt_base}/en-newest.pth').to(device)
 
 
@@ -215,7 +217,15 @@ async def synthesize_speech(
         model = TTS(language=language, device=device)
         logging.info(f'model keys: {model.hps.data.spk2id.keys()}')
         save_path = f'{output_dir}/output_v2_{speaker_key}.wav'
-        source_se = torch.load(f'checkpoints_v2/base_speakers/ses/{speaker_key}.pth', map_location=device)
+
+        if speaker_key in base_speakers:
+            start_time2 = time.time()
+            source_se = torch.load(f'checkpoints_v2/base_speakers/ses/{speaker_key}.pth', map_location=device)
+            stop_time2 = time.time()
+            logging.info(f'Loaded base speaker embedding in {stop_time2 - start_time2} seconds.')
+        else:
+            logging.error(f'Invalid base speaker: {speaker_key}')
+
         model.tts_to_file(text, model.hps.data.spk2id[speaker_key], src_path, speed=speed)
 
         # Run the tone color converter
