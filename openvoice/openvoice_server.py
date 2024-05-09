@@ -102,6 +102,13 @@ async def base_tts(text: str, accent: Optional[str] = 'en-newest', speed: Option
     :return: The speech audio.
     :rtype: .wav file
     """
+    global model
+
+    if accent not in model:
+        logging.info(f'Loading {accent}...')
+        model[accent] = TTS(language=key_map[accent][1], device=device)
+        logging.info('...done.')
+
     try:
         save_path = f'{output_dir}/output_v2_{accent}.wav'
         model[accent].tts_to_file(text, model[accent].hps.data.spk2id[key_map[accent][0]], save_path, speed=speed)
@@ -221,6 +228,13 @@ async def synthesize_speech(
     :return: The synthesized speech as a .wav file.
     :rtype: .wav file
     """
+    global model
+
+    if accent not in model:
+        logging.info(f'Loading {accent}...')
+        model[accent] = TTS(language=key_map[accent][1], device=device)
+        logging.info('...done.')
+
     start_time = time.time()
     try:
         logging.info(f'Generating speech for {voice}')
