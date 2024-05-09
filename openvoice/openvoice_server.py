@@ -67,20 +67,13 @@ source_se = {
     "zh": torch.load(f'{ckpt_base}/zh.pth').to(device)
 }
 logging.info('Loaded base speakers.')
+logging.info('Loading TTS models...')
+model = {}
+for accent in base_speakers:
+    logging.info(f'Loading {accent}...')
+    model[accent] = TTS(language=key_map[accent][1], device=device)
+    logging.info('...done.')
 
-model = {
-    "en-newest": TTS(language='EN_NEWEST', device=device),
-    "en-us": TTS(language='EN', device=device),
-    "en-br": TTS(language='EN', device=device),
-    "en-india": TTS(language='EN', device=device),
-    "en-au": TTS(language='EN', device=device),
-    "en-default": TTS(language='EN', device=device),
-    "es": TTS(language='ES', device=device),
-    "fr": TTS(language='FR', device=device),
-    "jp": TTS(language='JP', device=device),
-    "kr": TTS(language='KR', device=device),
-    "zh": TTS(language='ZH', device=device)
-}
 logging.info('Loaded TTS models.')
 
 
