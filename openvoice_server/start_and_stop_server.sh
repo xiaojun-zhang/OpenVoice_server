@@ -7,7 +7,7 @@ conda install --yes libmagic
 uvicorn openvoice_server:app --host "0.0.0.0" --port 8000 &
 # Get its PID
 PID=$!
-# Wait for 60 seconds
-sleep 60
+# Wait for 300 seconds  to allow some models to download
+sleep 300
 # Kill the process
 kill $PID
