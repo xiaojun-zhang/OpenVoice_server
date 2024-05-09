@@ -39,7 +39,7 @@ output_dir = 'outputs'
 os.makedirs(output_dir, exist_ok=True)
 
 # Available base speakers
-base_speakers = ['en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr']
+base_speakers = ['en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'jp', 'kr', 'zh']
 key_map = {'en-newest': ('EN-Newest', 'EN_NEWEST'),
            'en-us': ('EN-US', 'EN'),
            'en-br': ('EN-BR', 'EN'),
@@ -69,6 +69,11 @@ source_se = {
 logging.info('Loaded base speakers.')
 logging.info('Loading TTS models...')
 model = {}
+
+# When running on CPU, only load the en-newest model
+if device == "cpu":
+    base_speakers = ['en-newest']
+
 for accent in base_speakers:
     logging.info(f'Loading {accent}...')
     model[accent] = TTS(language=key_map[accent][1], device=device)
