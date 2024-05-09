@@ -68,6 +68,21 @@ source_se = {
 }
 logging.info('Loaded base speakers.')
 
+model = {
+    "en-newest": TTS(language='EN_NEWEST', device=device),
+    "en-us": TTS(language='EN', device=device),
+    "en-br": TTS(language='EN', device=device),
+    "en-india": TTS(language='EN', device=device),
+    "en-au": TTS(language='EN', device=device),
+    "en-default": TTS(language='EN', device=device),
+    "es": TTS(language='ES', device=device),
+    "fr": TTS(language='FR', device=device),
+    "jp": TTS(language='JP', device=device),
+    "kr": TTS(language='KR', device=device),
+    "zh": TTS(language='ZH', device=device)
+}
+logging.info('Loaded TTS models.')
+
 
 class UploadAudioRequest(BaseModel):
     audio_file_label: str
@@ -95,9 +110,8 @@ async def base_tts(text: str, accent: Optional[str] = 'en-newest', speed: Option
     :rtype: .wav file
     """
     try:
-        model = TTS(language=key_map[accent][1], device=device)
         save_path = f'{output_dir}/output_v2_{accent}.wav'
-        model.tts_to_file(text, model.hps.data.spk2id[key_map[accent][0]], save_path, speed=speed)
+        model[accent].tts_to_file(text, model[accent].hps.data.spk2id[key_map[accent][0]], save_path, speed=speed)
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
         return result
     except Exception as e:
@@ -233,11 +247,8 @@ async def synthesize_speech(
 
         # Run the base speaker tts
         src_path = f'{output_dir}/tmp.wav'
-        model = TTS(language=key_map[accent][1], device=device)
-        logging.info(f'model keys: {model.hps.data.spk2id.keys()}')
         save_path = f'{output_dir}/output_v2_{accent}.wav'
-
-        model.tts_to_file(text, model.hps.data.spk2id[key_map[accent][0]], src_path, speed=speed)
+        model[accent].tts_to_file(text, model[accent].hps.data.spk2id[key_map[accent][0]], src_path, speed=speed)
 
         # Run the tone color converter
         tone_color_converter.convert(
@@ -250,7 +261,7 @@ async def synthesize_speech(
         result = StreamingResponse(open(save_path, 'rb'), media_type="audio/wav")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    logging.info('6')
+
     end_time = time.time()
     elapsed_time = end_time - start_time
 
