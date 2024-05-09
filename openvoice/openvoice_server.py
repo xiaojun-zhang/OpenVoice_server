@@ -39,7 +39,7 @@ output_dir = 'outputs'
 os.makedirs(output_dir, exist_ok=True)
 
 # Available base speakers
-base_speakers = ['en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'kr', 'zh']
+base_speakers = ['en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'zh']
 key_map = {'en-newest': ('EN-Newest', 'EN_NEWEST'),
            'en-us': ('EN-US', 'EN'),
            'en-br': ('EN-BR', 'EN'),
