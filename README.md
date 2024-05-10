@@ -46,8 +46,7 @@ This endpoint performs text-to-speech conversion using only the base speaker.
 **Request Body:**
 
 - `text` (str): The text to be converted to speech.
-- `style` (str, optional): The style to be used for the synthesized speech. Defaults to 'default'.
-- `language` (str, optional): The language of the text to be synthesized. Defaults to 'English'.
+- `accent` (str, optional): The accent to be used for the synthesized speech. Defaults to 'en-newest'. Options are: 'en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'jp', 'kr', 'zh'
 - `speed` (float, optional): The speed of the synthesized speech. Defaults to 1.0.
 
 **Example Request:**
@@ -58,7 +57,7 @@ import requests
 url = "http://localhost:8000/base_tts/"
 params = {
     "text": "Hello, world!",
-    "style": "default",
+    "accent": "en-newest",
     "language": "English",
     "speed": 1.0
 }
@@ -137,8 +136,7 @@ This endpoint synthesizes speech from text using a specified voice and style.
 
 - `text` (str): The text to be synthesized into speech.
 - `voice` (str): The voice to be used for the synthesized speech.
-- `style` (str, optional): The style to be used for the synthesized speech. Defaults to 'default'.
-- `language` (str, optional): The language of the text to be synthesized. Defaults to 'English'.
+- `accent` (str, optional): The accent to be used for the synthesized speech. Defaults to 'en-newest'. Options are: 'en-au', 'en-br', 'en-default', 'en-india', 'en-newest', 'en-us', 'es', 'fr', 'jp', 'kr', 'zh'
 - `speed` (float, optional): The speed of the synthesized speech. Defaults to 1.0.
 - `watermark` (str, optional): The watermark to be encoded in the voice conversion. Defaults to '@MyShell'.
 
@@ -157,8 +155,7 @@ url = "http://localhost:8000/synthesize_speech/"
 data = {
     "text": "Hello, world!",
     "voice": "example_label",
-    "style": "default",
-    "language": "English",
+    "accent": "en-newest",
     "speed": 1.0
 }
 
