@@ -17,8 +17,8 @@ langid==1.1.6
 botocore==1.34.88
 cached_path==1.6.2
 python-magic==0.4.27
-libmagic==1.0
 fastapi==0.110.1
+uvicorn==0.29.0
 torch==2.2.2
 soundfile==0.12.1
 starlette==0.37.2

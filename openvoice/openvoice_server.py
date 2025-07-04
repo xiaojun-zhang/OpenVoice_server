@@ -2,7 +2,7 @@ import os
 import time
 import torch
 from melo.api import TTS
-import se_extractor
+import openvoice.se_extractor as se_extractor
 import io
 import magic
 import logging
@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import StreamingResponse
 from typing import Optional
 from pydantic import BaseModel
-from api import ToneColorConverter
+from openvoice.api import ToneColorConverter
 
 logging.basicConfig(level=logging.INFO)
 

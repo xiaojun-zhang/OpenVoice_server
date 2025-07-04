@@ -4,18 +4,6 @@ OpenVoice Server is a FastAPI application that provides endpoints for uploading 
 It is built on top of the OpenVoice project, which is a versatile instant voice cloning system that can accurately clone the reference tone color and generate speech in multiple languages and accents.
 See: https://github.com/myshell-ai/OpenVoice
 
-## Runpod.io template
-I have provided 2 easy to deploy one-click templates for Runpod.io, for those who want to quickly deploy the OpenVoice Server on a Runpod instance.
-The first template uses OpenVoice V1, and the second template uses OpenVoice V2, there are slight changes in the API endpoints (v1 has style and language, v2 only has accent as parameters).
-
-V1 is slightly faster but only supports English, while V2 sounds better and supports multiple languages and accents.
-
-OpenVoice V1 server:
-https://runpod.io/console/deploy?template=6uvya46w7n&ref=2vdt3dn9
-
-OpenVoice V2 server:
-https://runpod.io/console/deploy?template=qo8v6w92q2&ref=2vdt3dn9
-
 ## Installation
 
 1. Clone the repository:
@@ -26,18 +14,27 @@ https://runpod.io/console/deploy?template=qo8v6w92q2&ref=2vdt3dn9
    ```bash
    cd openvoice_server
    ```
+```
+conda create -n openvoice python=3.9
+conda activate openvoice
+```
+
 3. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+    ```bash
+    pip install -r requirements.txt
+    conda install ffmpeg
+    conda install --yes libmagic
+
+    pip install git+https://github.com/myshell-ai/MeloTTS.git
+    python -m unidic download
+    ```
 
 ## Usage
 
 To start the server, run the following command:
 
 ```bash
-cd openvoice
-uvicorn openvoice_server:app --host 0.0.0.0 --port 8000
+python -m openvoice.main
 ```
 
 The server provides the following endpoints:
